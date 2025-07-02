@@ -40,16 +40,17 @@
     }
 
     #sticky-header h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1.3rem;  /* 기존 1.1rem → 1.3rem 으로 */
+      font-weight: 700;   /* 기존 600 → 700 으로 */
       margin: 0;
-      color: #333;
+      color: #222;        /* 조금 더 진한 색 */
     }
 
     #sticky-header .sub {
       margin-top: 0.3rem;
-      font-size: 0.9rem;
-      color: #666;
+      font-size: 1rem;    /* 기존 0.9rem → 1rem 으로 */
+      font-weight: 500;   /* 기존에는 weight 없음 → 추가 */
+      color: #444;        /* 조금 더 진한 색 */
     }
 
     .container-box {
@@ -133,9 +134,16 @@
 
     @media (max-width: 576px) {
       h1 { font-size: 1.3rem; }
-      #sticky-header h2 { font-size: 1rem; }
-      #sticky-header .sub { font-size: 0.8rem; }
+      #sticky-header h2 { 
+        font-size: 1.2rem; /* 기존 1rem → 1.2rem */
+        font-weight: 700;  /* 강조 유지 */
+      }
+      #sticky-header .sub { 
+        font-size: 0.9rem; /* 기존 0.8rem → 0.9rem */
+        font-weight: 500;  /* 강조 추가 */
+      }
     }
+
 
     #loading-screen { display: block; }
   </style>
