@@ -26,7 +26,7 @@
       top: 0;
       left: 0;
       right: 0;
-      background: #ffffffcc; /* 살짝 투명 */
+      background: #ffffffcc;
       backdrop-filter: blur(6px);
       border-bottom: 1px solid #e0e0e0;
       padding: 0.8rem 1.2rem;
@@ -40,17 +40,17 @@
     }
 
     #sticky-header h2 {
-      font-size: 1.3rem;  /* 기존 1.1rem → 1.3rem 으로 */
-      font-weight: 700;   /* 기존 600 → 700 으로 */
+      font-size: 1.3rem;
+      font-weight: 700;
       margin: 0;
-      color: #222;        /* 조금 더 진한 색 */
+      color: #222;
     }
 
     #sticky-header .sub {
       margin-top: 0.3rem;
-      font-size: 1rem;    /* 기존 0.9rem → 1rem 으로 */
-      font-weight: 500;   /* 기존에는 weight 없음 → 추가 */
-      color: #444;        /* 조금 더 진한 색 */
+      font-size: 1rem;
+      font-weight: 500;
+      color: #444;
     }
 
     .container-box {
@@ -63,7 +63,7 @@
     }
 
     .topic-box {
-      margin-top: 80px; /* 헤더 공간 확보 */
+      margin-top: 80px;
       margin-bottom: 2rem;
     }
 
@@ -84,6 +84,17 @@
       border-radius: 0.5rem;
       overflow: hidden;
       margin: 0.5rem 0 1rem 0;
+      position: relative; /* 삼각형 기준점 */
+    }
+
+    .person-card.has-fold::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-top: 15px solid #1707ff; /* 삼각형 색상 */
+      border-left: 15px solid transparent;
+      z-index: 10;
     }
 
     .person-toggle {
@@ -134,16 +145,15 @@
 
     @media (max-width: 576px) {
       h1 { font-size: 1.3rem; }
-      #sticky-header h2 { 
-        font-size: 1.2rem; /* 기존 1rem → 1.2rem */
-        font-weight: 700;  /* 강조 유지 */
+      #sticky-header h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
       }
-      #sticky-header .sub { 
-        font-size: 0.9rem; /* 기존 0.8rem → 0.9rem */
-        font-weight: 500;  /* 강조 추가 */
+      #sticky-header .sub {
+        font-size: 0.9rem;
+        font-weight: 500;
       }
     }
-
 
     #loading-screen { display: block; }
   </style>
@@ -231,6 +241,11 @@
 
           section.appendChild(note);
 
+          // 👉 note 내용이 있으면 카드에 has-fold 클래스 추가
+          if (value && value.trim() !== '' && value !== '(아직 작성된 내용이 없습니다)') {
+            card.classList.add('has-fold');
+          }
+
           btn.onclick = () => {
             const isOpen = section.classList.contains('open');
             section.classList.toggle('open', !isOpen);
@@ -250,39 +265,37 @@
       setupObserver();
     }
 
-function setupObserver() {
-  const header = document.getElementById('sticky-header');
-  const headerTitle = document.getElementById('header-title');
-  const headerSub = document.getElementById('header-sub');
+    function setupObserver() {
+      const header = document.getElementById('sticky-header');
+      const headerTitle = document.getElementById('header-title');
+      const headerSub = document.getElementById('header-sub');
 
-  const topicTitles = document.querySelectorAll('.topic-title');
+      const topicTitles = document.querySelectorAll('.topic-title');
 
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        // 교차 비율은 무시, top에 닿을 때만
-        if (entry.isIntersecting) {
-          if (entry.boundingClientRect.top <= 0) {
-            const topicBox = entry.target.closest('.topic-box');
-            const title = entry.target.textContent;
-            const sub = topicBox.querySelector('.subtopic-label')?.innerHTML || '';
-            headerTitle.textContent = title;
-            headerSub.innerHTML = sub;
-            header.classList.add('active');
-          }
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              if (entry.boundingClientRect.top <= 0) {
+                const topicBox = entry.target.closest('.topic-box');
+                const title = entry.target.textContent;
+                const sub = topicBox.querySelector('.subtopic-label')?.innerHTML || '';
+                headerTitle.textContent = title;
+                headerSub.innerHTML = sub;
+                header.classList.add('active');
+              }
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: '0px 0px -100% 0px',
+          threshold: 0
         }
-      });
-    },
-    {
-      root: null,
-      rootMargin: '0px 0px -100% 0px',
-      threshold: 0
+      );
+
+      topicTitles.forEach(titleEl => observer.observe(titleEl));
     }
-  );
-
-  topicTitles.forEach(titleEl => observer.observe(titleEl));
-}
-
 
     loadData();
   </script>
